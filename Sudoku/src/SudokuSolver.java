@@ -32,12 +32,17 @@ public class SudokuSolver {
         for (int row = 0; row < Globals.BOARD_SIZE; ++row)
             for (int col = 0; col < Globals.BOARD_SIZE; ++col) {
                 int boardValue = board[row][col];
-                board[row][col]=0;
-                if (boardValue!=0&&isValidSquareValue(1<<(boardValue), row, col)==false) {
+
+                // checking if the given board was invalid
+                // (containing the same value in a row, column or 3x3 box).
+                board[row][col] = 0;
+                if (boardValue != 0 && isValidSquareValue(1 << (boardValue), row, col) == false) {
                     validBoard = false;
                     break;
                 }
                 board[row][col]=boardValue;
+
+
                 rows[row] |= (1 << boardValue);
                 columns[col] |= (1 << boardValue);
                 boxes[row / Globals.BOX_SIZE][col / Globals.BOX_SIZE] |= (1 << boardValue);

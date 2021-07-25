@@ -5,7 +5,6 @@ import java.util.Collections;
 
 public class RandomLevelGenerator {
     private static final String LEVEL_DIRECTORY_PATH = "levels";
-    private static String difficulty;
     private static ArrayList<String> filePaths = new ArrayList<String>();
     private static ArrayList<Level> easyLevels= new ArrayList<Level>();
     private static ArrayList<Level> mediumLevels= new ArrayList<Level>();
@@ -50,7 +49,7 @@ public class RandomLevelGenerator {
     }
 
     /**
-     * Method that creates a 
+     * Method that creates a list with the levels for each difficulty
      */
     public void createDifficultyLists(){
         for(String filepath:filePaths){
@@ -63,6 +62,11 @@ public class RandomLevelGenerator {
     }
     }
 
+    /**
+     * Method that generates a random level with a specified difficulty
+     * @param difficulty is the specified difficulty
+     * @return the next level that will be loaded and displayed
+     */
     public static Level getLevelWithDifficulty(String difficulty) {
         switch (difficulty){
             case "easy":return easyLevels.get((easyLevelsPointer++) %easyLevels.size());

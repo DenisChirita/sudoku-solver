@@ -4,23 +4,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainMenu {
-GUI gui;
-JPanel mainMenuPanel= new JPanel();
-public MainMenu(){
-    gui= new GUI();
-    JButton playButton= new JButton("Play");
-    playButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent event){
-            new DifficultySelector(gui);
-        }
-    });
-    playButton.setFocusPainted(false);
+    GUI gui;
+    JPanel mainMenuPanel = new JPanel();
 
-    mainMenuPanel = new JPanel();
-    mainMenuPanel.add(playButton);
-    mainMenuPanel.revalidate();
-    mainMenuPanel.repaint();
-    gui.addToContainer(mainMenuPanel, "Main menu");
-    gui.getCard().show(gui.getContainer(), "Main menu");
-}
+    // constructor that displays a panel with a Play button
+    public MainMenu() {
+        gui = new GUI();
+
+        JButton playButton = new JButton("Play");
+        playButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                new DifficultySelector(gui);
+            }
+        });
+        playButton.setFocusPainted(false);
+
+        mainMenuPanel = new JPanel();
+        mainMenuPanel.add(playButton);
+        mainMenuPanel.revalidate();
+        mainMenuPanel.repaint();
+        gui.addToContainer(mainMenuPanel, "Main menu");
+        gui.getCard().show(gui.getContain(), "Main menu");
+    }
 }

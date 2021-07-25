@@ -54,7 +54,7 @@ public class GUI extends JFrame {
 
     }
 
-    public Container getContainer() {
+    public Container getContain() {
         return container;
     }
 

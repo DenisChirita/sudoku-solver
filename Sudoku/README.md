@@ -1,14 +1,4 @@
-## Getting Started
-
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
-
-## Folder Structure
-
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-## Dependency Management
-
-The `JAVA DEPENDENCIES` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-pack/blob/master/release-notes/v0.9.0.md#work-with-jar-files-directly).
+This is a Sudoku game. The GUI is created using the Swing Library in Java.
+The game implements a sudoku solver algorithm in order to solve any board.
+The Sudoku Solver algorithm is using Backtracking and uses bitwise operations. The bitwise operations make the complexity of checking if a number can be placed on the board on a certain square equal to O(1).
+The folder "levels" contains JSON files with hardcoded levels.

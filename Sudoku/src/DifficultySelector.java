@@ -20,7 +20,7 @@ public class DifficultySelector {
 
         // adding and displaying the panel
         gui.addToContainer(difficultyPanel, "Difficulty");
-        gui.getCard().show(gui.getContainer(), "Difficulty");
+        gui.getCard().show(gui.getContain(), "Difficulty");
 
     }
 

@@ -13,6 +13,7 @@ public class SudokuGrid extends JPanel {
     private int selectedRow;
     private int selectedColumn;
     private int lives;
+    private int squaresToWin;
     GUI gui;
     private SudokuSquare[][] gridButtons;
     private int[][] board = new int[Globals.BOARD_SIZE][Globals.BOARD_SIZE];
@@ -26,10 +27,11 @@ public class SudokuGrid extends JPanel {
     public SudokuGrid(GUI gui, int[][] board, int[][] solution) {
         this.gui = gui;
         this.lives = Globals.NUMBER_OF_LIVES;
+        squaresToWin = Globals.BOARD_SIZE * Globals.BOARD_SIZE;
         for (int row = 0; row < Globals.BOARD_SIZE; row++)
-            for (int col = 0; col < Globals.BOARD_SIZE; col++){
+            for (int col = 0; col < Globals.BOARD_SIZE; col++) {
                 this.board[row][col] = board[row][col];
-                this.solution[row][col]=solution[row][col];
+                this.solution[row][col] = solution[row][col];
             }
         setLayout(new GridLayout(Globals.BOARD_SIZE + 1, Globals.BOARD_SIZE));
         this.selectedRow = -1;
@@ -37,7 +39,7 @@ public class SudokuGrid extends JPanel {
         createGrid();
         createNumberBar();
         gui.addToContainer(this, "SudokuGrid");
-        gui.getCard().show(gui.getContainer(), "SudokuGrid");
+        gui.getCard().show(gui.getContain(), "SudokuGrid");
         revalidate();
         repaint();
     }
@@ -98,6 +100,7 @@ public class SudokuGrid extends JPanel {
 
         /**
          * Method that resets a square when the reset button is pressed
+         * 
          * @param row    the row of the square
          * @param column the column of the square
          */
@@ -108,6 +111,7 @@ public class SudokuGrid extends JPanel {
                 addNumberToSquare(board[row][column]);
                 // make the given squares unclickable
                 this.clickableSquare = false;
+                squaresToWin--;
             } else {
                 this.clickableSquare = true;
                 setText("");
@@ -132,6 +136,7 @@ public class SudokuGrid extends JPanel {
 
         /**
          * Method that sets the background color of a button to a given color
+         * 
          * @param color is the given color
          */
         public void colorButton(Color color) {
@@ -153,7 +158,6 @@ public class SudokuGrid extends JPanel {
 
         /**
          * Method that adds a given number to the square
-         * 
          * @param number is the given number
          */
         public void addNumberToSquare(int number) {
@@ -169,6 +173,7 @@ public class SudokuGrid extends JPanel {
 
         /**
          * Method that returns if a square is clickable
+         * 
          * @return true if the square is clickable
          */
         public boolean isClickable() {
@@ -176,10 +181,13 @@ public class SudokuGrid extends JPanel {
         }
 
     }
-    
 
+    /**
+     * Method that resets the board when the replay button is pushed
+     */
     public void resetBoard() {
         this.lives = Globals.NUMBER_OF_LIVES;
+        this.squaresToWin = Globals.BOARD_SIZE * Globals.BOARD_SIZE;
         this.selectedRow = -1;
         this.selectedColumn = -1;
         for (int r = 0; r < Globals.BOARD_SIZE; r++)
@@ -211,8 +219,14 @@ public class SudokuGrid extends JPanel {
                 if (solution[selectedRow][selectedColumn] == Integer.parseInt(this.getText())) {
                     if (gridButtons[selectedRow][selectedColumn].color == Color.RED)
                         gridButtons[selectedRow][selectedColumn].colorButton(Color.WHITE);
+                    if(gridButtons[selectedRow][selectedColumn].getText().equals("")){
                     gridButtons[selectedRow][selectedColumn].addNumberToSquare(Integer.parseInt(this.getText()));
+                    squaresToWin--;
+                    }
                     gridButtons[selectedRow][selectedColumn].setAsUnclickable();
+                    if (squaresToWin == 0) {
+                        displayWinLoseDialog("You won!", "Congratulations, you solved this board!");
+                    }
                 }
                 // if we chose the wrong button a message will be displayed and we lose a life
                 else if (gridButtons[selectedRow][selectedColumn].isClickable()) {
@@ -222,49 +236,56 @@ public class SudokuGrid extends JPanel {
                     if (lives > 0) {
                         JDialog warningDialog = new JDialog(gui, "Warning!");
                         warningDialog.setLocationRelativeTo(gui);
-                        warningDialog
-                                .add(new JLabel("Wrong number, you lost a life!\n You have " + lives + " lives left."));
-
+                        JPanel warningPanel = new JPanel();
+                        warningPanel.add(new JLabel("Wrong number, you lost a life!"));
+                        warningPanel.add(new JLabel("You have " + lives + " lives left."));
+                        warningDialog.add(warningPanel);
                         // set the size of dialog
                         warningDialog.setSize(200, 200);
                         // block any other move on the board until the warning is closed
                         warningDialog.setModal(true);
                         warningDialog.setVisible(true);
                     } else {
-                        displayGameOverDialog();
+                        displayWinLoseDialog("Game over!", "Game over, you lost!");
                     }
 
                 }
         }
 
         /**
-         * Method that displays a Game Over Dialog. The user can choose to restart the
-         * level or play a new one
+         * Method that displays a Game Over Dialog or a Win Dialog. The user can choose
+         * to restart the level or play a new one
          */
-        private void displayGameOverDialog() {
-            JDialog gameOverDialog = new JDialog(gui, "Game over!");
-            gameOverDialog.setLocationRelativeTo(gui);
+        private void displayWinLoseDialog(String dialogName, String message) {
+            JDialog dialog = new JDialog(gui, dialogName);
+            dialog.setLocationRelativeTo(gui);
+            JPanel panel = new JPanel();
+            JPanel messagePanel = new JPanel();
             JButton restartButton = new JButton("Restart Level");
             JButton nextLevelButton = new JButton("New Game");
-            Panel panel = new Panel();
+            JLabel messageLabel = new JLabel(message);
             restartButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    gameOverDialog.dispose();
+                    dialog.dispose();
                     resetBoard();
                 }
             });
             nextLevelButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent event) {
-                    gameOverDialog.dispose();
+                    dialog.dispose();
                     new DifficultySelector(gui);
                 }
             });
+            restartButton.setFocusPainted(false);
+            nextLevelButton.setFocusPainted(false);
+            messagePanel.add(messageLabel);
             panel.add(restartButton);
             panel.add(nextLevelButton);
-            gameOverDialog.add(panel);
-            gameOverDialog.setSize(300, 300);
-            gameOverDialog.setModal(true);
-            gameOverDialog.setVisible(true);
+            dialog.add(messagePanel, BorderLayout.NORTH);
+            dialog.add(panel);
+            dialog.setSize(300, 300);
+            dialog.setModal(true);
+            dialog.setVisible(true);
         }
     }
 }
